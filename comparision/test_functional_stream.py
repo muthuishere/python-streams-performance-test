@@ -94,7 +94,7 @@ class TestStream(BaseUnitTest):
 
 
         start_profiler()
-        #706 function calls in 0.000 seconds
+        #510 function calls in 0.000 seconds
         results = (Stream.create(users)
                      .filter(is_salary_greater_than_5000)
                      .filter(is_male)
@@ -150,13 +150,14 @@ class TestStream(BaseUnitTest):
         name_from_product = lambda product: product['name']
         price_from_product = lambda product: product['price']
 
-        total_products = Stream.create(get_products()).length()
+        total_products = Stream.create(get_products()).stream().length()
         products_of_rating_greater_than_three = (Stream.create(get_products())
                                                  .stream()
                                                  .filter(is_clothing)
                                                  .filter(is_rating_greater_than_three)
                                                  )
         rating_values = (products_of_rating_greater_than_three
+                         .stream()
                          .flatmap(reviews_from_product)
                          .map(rating_from_review)
                          .asList())
@@ -164,7 +165,7 @@ class TestStream(BaseUnitTest):
         product_prices_of_rating_greater_than_three = (products_of_rating_greater_than_three
                                                        .stream()
                                                        .map(price_from_product)
-                                                       .asList())
+                                                       )
 
         product_prices = (product_prices_of_rating_greater_than_three
                           .stream()
